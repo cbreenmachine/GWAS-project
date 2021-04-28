@@ -1,2 +1,5 @@
 *.zip
 data/*
+*.RHistory
+*.RData
+*.pdf
