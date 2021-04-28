@@ -1,0 +1,55 @@
+---
+title: "Genetic Structural Equation Modeling"
+author: "Coleman Breen"
+date: "4/26/2021"
+output: pdf_document
+---
+
+
+```{r, warning=F}
+library(data.table)
+library(tidyverse)
+library(GenomicSEM) # https://github.com/GenomicSEM/GenomicSEM
+
+df <- fread("../data/GWAS_CP_all.txt")
+```
+
+
+
+```{r}
+head(df)
+```
+The first thing we need to do according to the documentation is munge the GWAS data according to 
+https://github.com/GenomicSEM/GenomicSEM/wiki/4.-Common-Factor-GWAS
+
+
+Download data from https://utexas.app.box.com/s/vkd36n197m8klbaio3yzoxsee6sxo11v
+What's from this source?
+
+
+and here
+https://alkesgroup.broadinstitute.org/LDSCORE/
+
+GenoCanyon Files here:
+
+https://drive.google.com/drive/folders/11CTkijuwiEMHAkE6k37EzbwzAYXIhkMe
+snp.list
+
+```{r munge-data}
+GenomicSEM::munge(c("../data/GWAS_CP_all.txt"), 
+                  "../data/w_hm3.snplist",
+                  trait.names=c("../cogper"),
+                  c(257828), 
+                  info.filter = 0.9, maf.filter = 0.01)
+```
+
+Dropped most of the rows because rs ids were not in reference file.
+
+
+```{r LDSC}
+GenomicSEM::ldsc(traits = "cogper.sumstats.gz", sample.prev = NaN, population.prev = NaN, 
+                 ld="../data/eur_w_ld_chr/", wld="../data/eur_w_ld_chr/",
+                 trait.names = "cogper")
+```
+
+
